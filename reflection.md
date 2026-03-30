@@ -5,7 +5,28 @@
 **a. Initial design**
 
 - Briefly describe your initial UML design.
+It will have classes, attributes, methods, and relationships. 
+
+Attributes: The information it needs to hold are owner information, pet information, specific pet tasks. 
+
+Methods: The actions that it can perform are produce a daily plan/schedule + explaination, let a user add or delete pet care tasks, and be able to track pet care tasks. 
+
+Relationships: 
+- owner has pets
+- pets have tasks 
+
+Natural Language: 
+Three Core Actions User Should Be Able to Perform: 
+1) Enter basic owner and pet information 
+2) Add or delete tasks at their own will, specifically the duration and the priority. 
+3) Track pet care tasks such as walks, feeding, meds, enrichment, grooming, etc.
+
 - What classes did you include, and what responsibilities did you assign to each?
+
+1) Owner: 
+2) Pet: 
+3) Task: 
+4) Scheduler: 
 
 **b. Design changes**
 
