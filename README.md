@@ -54,3 +54,12 @@ The PawPal+ scheduler goes beyond simple task tracking with intelligent scheduli
 - **Greedy Schedule Generation**: Fills the available time window by prioritizing high-value tasks first, maximizing care coverage within realistic daily constraints
 
 Example: If a dog needs a 20-minute morning walk and 15-minute feeding, both flagged as high-priority, the scheduler ranks the walk first. If a cat also needs a 10-minute feeding at the same time, a conflict warning alerts the owner to reschedule.
+
+Testing PawPal+: 
+- Command to run tests: python -m pytest
+
+Description of what tests cover: 
+- Completion and addition of tasks 
+- Sorting correctness 
+- Dealing with recurrences 
+- Detecting conflicts within tasks 

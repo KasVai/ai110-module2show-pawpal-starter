@@ -74,6 +74,7 @@ One tradeoff my scheudler makes is showing warnings instead of stopping the whol
 - How did you use AI tools during this project (for example: design brainstorming, debugging, refactoring)?
 - What kinds of prompts or questions were most helpful?
 
+
 **b. Judgment and verification**
 
 - Describe one moment where you did not accept an AI suggestion as-is.
