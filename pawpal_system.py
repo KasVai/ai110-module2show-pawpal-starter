@@ -5,23 +5,18 @@ from typing import List, Optional, Dict
 @dataclass
 class Task:
     """Represents a pet care task."""
-    title: str
-    duration_minutes: int
-    priority: str  # "low", "medium", "high"
-    task_type: str  # "walk", "feeding", "meds", "enrichment", "grooming", etc.
-    completed: bool = False
+    description: str
+    time: int
+    frequency: str 
+    completion_status: bool = False
     
-    def update_priority(self, priority: str) -> None:
-        """Update the task priority."""
-        self.priority = priority
-    
-    def update_duration(self, minutes: int) -> None:
-        """Update the task duration."""
-        self.duration_minutes = minutes
+    def update_time(self, minutes: int) -> None:
+        """Update the task time."""
+        self.time = minutes
     
     def mark_completed(self) -> None:
         """Mark the task as completed."""
-        self.completed = True
+        self.completion_status = True
 
 
 @dataclass
@@ -29,8 +24,7 @@ class Pet:
     """Represents a pet owned by an owner."""
     name: str
     species: str
-    preferences: Dict = field(default_factory=dict)
-    tasks: List[Task] = field(default_factory=list)
+    tasks: List[Task] = field(default_factory=list)  
     owner: Optional['Owner'] = None
     
     def add_task(self, task: Task) -> None:
@@ -48,13 +42,21 @@ class Pet:
     
     def get_active_tasks(self) -> List[Task]:
         """Get only incomplete tasks."""
-        return [task for task in self.tasks if not task.completed]
+        return [task for task in self.tasks if not task.completion_status]
 
 
 class Owner:
     """Represents a pet owner."""
     
+    def get_all_tasks(self) -> List[Task]:
+        """Get all tasks across all owned pets."""
+        all_tasks = []
+        for pet in self.pets:
+            all_tasks.extend(pet.get_tasks())
+        return all_tasks
+
     def __init__(self, name: str, contact_info: str = "", preferences: Dict = None):
+        """Initialize an owner with name, contact info, and preferences."""
         self.name = name
         self.contact_info = contact_info
         self.preferences = preferences or {}
@@ -79,10 +81,17 @@ class Owner:
 class Scheduler:
     """Handles scheduling logic for pet care tasks."""
     
-    def __init__(self, pet: Pet, available_time_minutes: int = 480):
-        self.pet = pet
+    def __init__(self, owner: Owner, available_time_minutes: int = 480):
+        """Initialize scheduler with an owner and available daily time in minutes."""
+        self.owner = owner
         self.available_time_minutes = available_time_minutes
     
+    def retrieve_all_tasks(self) -> List[Task]:
+        """Retrieve all tasks from all owner's pets."""
+        all_tasks = []
+        for pet in self.owner.pets:
+            all_tasks.extend(pet.get_active_tasks())
+        return all_tasks
     def generate_schedule(self, tasks: List[Task]) -> List[Task]:
         """Generate a daily schedule by prioritizing and fitting tasks."""
         pass
@@ -96,5 +105,5 @@ class Scheduler:
         pass
     
     def fit_tasks_in_time(self, tasks: List[Task]) -> List[Task]:
-        """Fit as many prioritized tasks as possible within available time."""
+        """Fit tasks within available time constraints."""
         pass
