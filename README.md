@@ -63,3 +63,18 @@ Description of what tests cover:
 - Sorting correctness 
 - Dealing with recurrences 
 - Detecting conflicts within tasks 
+
+Confidence in system's readability: 4
+
+## Features List 
+- Smart scheduling 
+- Prioritization
+- Ability to manage multiple pets 
+- Custom filtering 
+- Recurrence logic 
+- Sorting by time 
+- Conflict warnings 
+
+## Demo 
+
+<a href="/course_images/ai110/screenshot.png" target="_blank"><img src='/course_images/ai110/screenshot.png' title='PawPal App' width='' alt='PawPal App' class='center-block' /></a>
