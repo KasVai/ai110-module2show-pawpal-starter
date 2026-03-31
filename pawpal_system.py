@@ -13,15 +13,15 @@ class Task:
     
     def update_priority(self, priority: str) -> None:
         """Update the task priority."""
-        pass
+        self.priority = priority
     
     def update_duration(self, minutes: int) -> None:
         """Update the task duration."""
-        pass
+        self.duration_minutes = minutes
     
     def mark_completed(self) -> None:
         """Mark the task as completed."""
-        pass
+        self.completed = True
 
 
 @dataclass
@@ -35,19 +35,20 @@ class Pet:
     
     def add_task(self, task: Task) -> None:
         """Add a task to the pet's task list."""
-        pass
+        self.tasks.append(task)
     
     def remove_task(self, task_id: int) -> None:
         """Remove a task by index."""
-        pass
+        if 0 <= task_id < len(self.tasks):
+            self.tasks.pop(task_id)
     
     def get_tasks(self) -> List[Task]:
         """Get all tasks for this pet."""
-        pass
+        return self.tasks
     
     def get_active_tasks(self) -> List[Task]:
         """Get only incomplete tasks."""
-        pass
+        return [task for task in self.tasks if not task.completed]
 
 
 class Owner:
@@ -61,15 +62,18 @@ class Owner:
     
     def add_pet(self, pet: Pet) -> None:
         """Add a pet to the owner's collection."""
-        pass
+        self.pets.append(pet)
+        pet.owner = self
     
     def remove_pet(self, pet_id: int) -> None:
         """Remove a pet by index."""
-        pass
+        if 0 <= pet_id < len(self.pets):
+            pet = self.pets.pop(pet_id)
+            pet.owner = None
     
     def get_pets(self) -> List[Pet]:
         """Get all pets owned by this owner."""
-        pass
+        return self.pets
 
 
 class Scheduler:

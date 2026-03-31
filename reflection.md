@@ -5,6 +5,16 @@
 **a. Initial design**
 
 - Briefly describe your initial UML design.
+Classes: 
+    - Task: Represents each pet care task, where user can update task priority, update the task duration, and mark task as completed. 
+
+    - Pet: Represents a pet owned by an owner, where user can add task to list, remove a task by index, get all tasks for pet. 
+
+    - Owner: Represents pet owner where user can add pet to owner's collection, remove pet by index, and get all pets by by this owner. 
+
+    - Scheduler: Handles schedulign logic for pet care tasks including generating daily schedule. 
+
+
 It will have classes, attributes, methods, and relationships. 
 
 Attributes: The information it needs to hold are owner information, pet information, specific pet tasks. 
@@ -31,7 +41,12 @@ Three Core Actions User Should Be Able to Perform:
 **b. Design changes**
 
 - Did your design change during implementation?
+
+Yes, my design did change during implmentation as per the AI suggestion. 
+
 - If yes, describe at least one change and why you made it.
+
+I changed the biodirectional linking in Owner so whe nyou add a pet to the an owner, it sets the that pet's owner field back to the owner. There was an issue where the owner thinks they have the pet, but the pet doesn't know who owns it. So now printing owner.pets will print the pet name while pet.owner will print the owner name. 
 
 ---
 
