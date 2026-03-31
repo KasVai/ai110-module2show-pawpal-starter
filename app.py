@@ -1,6 +1,18 @@
 import streamlit as st
 
+from pawpal_system import Owner, Pet, Task, Scheduler
+
 st.set_page_config(page_title="PawPal+", page_icon="🐾", layout="centered")
+
+# Initialize session state for persistent data across reruns
+if "owner" not in st.session_state:
+    st.session_state.owner = Owner("Pet Owner", contact_info="owner@email.com")
+
+if "pets" not in st.session_state:
+    st.session_state.pets = []
+
+if "tasks" not in st.session_state:
+    st.session_state.tasks = []
 
 st.title("🐾 PawPal+")
 
@@ -38,51 +50,112 @@ At minimum, your system should:
 
 st.divider()
 
-st.subheader("Quick Demo Inputs (UI only)")
-owner_name = st.text_input("Owner name", value="Jordan")
-pet_name = st.text_input("Pet name", value="Mochi")
-species = st.selectbox("Species", ["dog", "cat", "other"])
-
-st.markdown("### Tasks")
-st.caption("Add a few tasks. In your final version, these should feed into your scheduler.")
-
-if "tasks" not in st.session_state:
-    st.session_state.tasks = []
-
-col1, col2, col3 = st.columns(3)
+st.subheader("🐾 Add a Pet")
+col1, col2 = st.columns(2)
 with col1:
-    task_title = st.text_input("Task title", value="Morning walk")
+    new_pet_name = st.text_input("Pet name", value="Mochi", key="pet_name_input")
 with col2:
-    duration = st.number_input("Duration (minutes)", min_value=1, max_value=240, value=20)
-with col3:
-    priority = st.selectbox("Priority", ["low", "medium", "high"], index=2)
+    new_pet_species = st.selectbox("Species", ["dog", "cat", "other"], key="pet_species_input")
 
-if st.button("Add task"):
-    st.session_state.tasks.append(
-        {"title": task_title, "duration_minutes": int(duration), "priority": priority}
-    )
+if st.button("Add pet to owner"):
+    # Create a new Pet and add it to the owner using Phase 2 methods
+    new_pet = Pet(name=new_pet_name, species=new_pet_species)
+    st.session_state.owner.add_pet(new_pet)
+    st.success(f"✅ Added {new_pet_name} the {new_pet_species} to your pet collection!")
 
-if st.session_state.tasks:
-    st.write("Current tasks:")
-    st.table(st.session_state.tasks)
+# Display current pets
+owner_pets = st.session_state.owner.get_pets()
+if owner_pets:
+    st.subheader(f"Your Pets ({len(owner_pets)})")
+    for i, pet in enumerate(owner_pets):
+        st.write(f"• **{pet.name}** ({pet.species.capitalize()}) - {len(pet.get_tasks())} tasks")
 else:
-    st.info("No tasks yet. Add one above.")
+    st.info("No pets yet. Add one above!")
 
 st.divider()
 
-st.subheader("Build Schedule")
-st.caption("This button should call your scheduling logic once you implement it.")
+st.subheader("✅ Add a Task")
+st.caption("Select a pet and add a task for it.")
+
+if owner_pets:
+    selected_pet_name = st.selectbox(
+        "Select pet",
+        [pet.name for pet in owner_pets],
+        key="pet_select"
+    )
+    selected_pet = next(p for p in owner_pets if p.name == selected_pet_name)
+    
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        task_description = st.text_input("Task description", value="Morning walk", key="task_desc_input")
+    with col2:
+        task_time = st.number_input("Duration (minutes)", min_value=1, max_value=240, value=20, key="task_time_input")
+    with col3:
+        task_frequency = st.selectbox("Frequency", ["daily", "weekly", "as-needed", "once"], key="task_freq_input")
+    
+    if st.button("Add task"):
+        # Create a new Task and add it to the selected pet using Phase 2 methods
+        new_task = Task(
+            description=task_description,
+            time=task_time,
+            frequency=task_frequency
+        )
+        selected_pet.add_task(new_task)
+        st.success(f"✅ Added '{task_description}' to {selected_pet_name}'s tasks!")
+    
+    # Display tasks for selected pet
+    active_tasks = selected_pet.get_active_tasks()
+    if active_tasks:
+        st.write(f"**{selected_pet_name}'s Tasks ({len(active_tasks)})**")
+        for i, task in enumerate(active_tasks, 1):
+            st.write(f"{i}. {task.description} ({task.time} min, {task.frequency})")
+else:
+    st.warning("Add a pet first before adding tasks!")
+
+st.divider()
+
+st.subheader("📋 Build Schedule")
+st.caption("Generate a daily schedule based on your pet's tasks.")
+
+available_time = st.slider(
+    "Available time today (minutes)",
+    min_value=60,
+    max_value=1440,
+    value=480,
+    step=30
+)
 
 if st.button("Generate schedule"):
-    st.warning(
-        "Not implemented yet. Next step: create your scheduling logic (classes/functions) and call it here."
-    )
-    st.markdown(
-        """
-Suggested approach:
-1. Design your UML (draft).
-2. Create class stubs (no logic).
-3. Implement scheduling behavior.
-4. Connect your scheduler here and display results.
-"""
-    )
+    owner_pets = st.session_state.owner.get_pets()
+    
+    if not owner_pets:
+        st.error("❌ No pets added yet!")
+    else:
+        all_tasks = []
+        for pet in owner_pets:
+            all_tasks.extend(pet.get_active_tasks())
+        
+        if not all_tasks:
+            st.warning("⚠️ No tasks to schedule. Add tasks to your pets first!")
+        else:
+            # Use the Scheduler to generate a schedule
+            scheduler = Scheduler(st.session_state.owner, available_time_minutes=int(available_time))
+            scheduled_tasks = scheduler.generate_schedule(all_tasks)
+            
+            st.success(f"✅ Schedule generated for {len(owner_pets)} pet(s)!")
+            
+            # Display the schedule
+            st.subheader("📅 Today's Schedule")
+            
+            total_time = 0
+            for i, task in enumerate(scheduled_tasks, 1):
+                st.write(f"{i}. **{task.description}** ({task.time} min, {task.frequency})")
+                total_time += task.time
+            
+            st.info(f"⏱️ **Total time needed: {total_time} minutes ({total_time // 60}h {total_time % 60}m)**")
+            
+            # Show explanation if available
+            if hasattr(scheduler, 'explain_schedule'):
+                explanation = scheduler.explain_schedule(scheduled_tasks)
+                if explanation:
+                    st.write(explanation)

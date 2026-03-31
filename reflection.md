@@ -57,11 +57,14 @@ I changed the biodirectional linking in Owner so whe nyou add a pet to the an ow
 - What constraints does your scheduler consider (for example: time, priority, preferences)?
 - How did you decide which constraints mattered most?
 
+Some contraints that my scheduler considered included time and frequency and I decided the time would be the most important. It is important for owner to follow the specific time limits for each task without going beyond bounds. Frequency is also important because tasks like feeding cannot only occur once. 
+
 **b. Tradeoffs**
 
 - Describe one tradeoff your scheduler makes.
 - Why is that tradeoff reasonable for this scenario?
 
+One tradeoff my scheudler makes is showing warnings instead of stopping the whole program. This allows any problems to show at once and it also allows to make decisions on their own terms. Another tradeoff the the specific scheduling which is reasonable because enables for beyyer speed and clairty. 
 ---
 
 ## 3. AI Collaboration
